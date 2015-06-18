@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:[[+id]]
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+DTEND:[[+eventEndDate]]
+UID:[[+eventID]]
+DTSTAMP:[[+dtstamp]]
+LOCATION:[[+location]]
+DESCRIPTION:[[+description]]
+[[+url:notempty=`URL;VALUE=URI:[[+url]]`]]
+SUMMARY:[[+name]]
+[[+attachment]]
+DTSTART:[[+eventStartDate]]
+[[+coordinates]]
+END:VEVENT
+END:VCALENDAR
