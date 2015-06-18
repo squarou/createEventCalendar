@@ -1,42 +1,44 @@
 <?php
 /*
 Params
-    &startDate: start date of the event
-    &endDate: end date of the event
+    &filePath: Path where the calendar file will be saved, defaults to assets/events directory (define path like /example/)
+    &fileName: defaults to pagetitle
+    &tpl: name of chunk to use. Defaults to eventCalendar
+    &summary: to add a summary of the event
+    &startDate: start date of the event, format like 2015-05-14 15:53:00 (default output of date TV)
+    &endDate: end date of the event, format like 2015-05-14 15:53:00 (default output of date TV)
     &address: comma delimited list of the addres as street,housenumber,zipcode,city,country
     &link: add link to the event
     &attachment: add an attachment to the event
-	&street: streetname
-	&housenumber: housenumber
-	&zipcode: zipcode
-	&city: city name
-	&country: country name
 	&coordinates: latitude,longitude
 	&geocode: 0 defaults to 1
-
+	
+	use the placeholder "calendarLink" to output the download link to the calendar file
 */
-$eventsDir 				= $modx->getOption('assets_path').'events/';
 
+$eventsDir 				= $filePath ?  $_SERVER['DOCUMENT_ROOT'] . $filePath : $modx->getOption('assets_path').'events/';
+$tpl                    = $tpl ? $tpl : 'eventCalendar';
 $eventID                = $modx->resource->get('id');
 $eventName 				= $modx->resource->get('longtitle') ? $modx->resource->get('longtitle') : $modx->resource->get('pagetitle');
 $eventSummary 			= wordwrap($summary, 50, "\n ", true);
+
 $eventStartDate         = strtotime($startDate);
 $eventEndDate           = strtotime($endDate);
 
 $prodid 				= mt_rand(1000000000, 9999999999) . $eventID;
 
 $addressArray           = explode(",", $address);
-$street                 = $addressArray[0];
-$housenumber            = $addressArray[1];
-$zipcode                = $addressArray[2];
-$city                   = $addressArray[3];
-$country                = $addressArray[4];
+$street                 = trim($addressArray[0]);
+$housenumber            = trim($addressArray[1]);
+$zipcode                = trim($addressArray[2]);
+$city                   = trim($addressArray[3]);
+$country                = trim($addressArray[4]);
 
 $eventLocation 			= $street . ' ' . $housenumber . ',' . $zipcode . ' ' . $city . ';' . $country;
 
 $geocode = ($geocode == 0) ? 0 : 1;
 //check if a file with this name already exists
-$file = $modx->resource->get('pagetitle') . ".ics";
+$file = $fileName ? $fileName . ".ics" : $modx->resource->get('pagetitle') . ".ics";
 $eventsFile = fopen($eventsDir . $file, "w");
 
 if(!$coordinates && $geocode == 1){
@@ -64,10 +66,8 @@ if(!$coordinates && $geocode == 1){
 		'longitude'		=> str_replace(",",".", $response['results'][0]['geometry']['location']['lng'])
 	);
 	
-	$coordinates = $geoCodeResults['latitude'].','.$geoCodeResults['longitude'];
+	$coordinates        = $geoCodeResults['latitude'].','.$geoCodeResults['longitude'];
 }
-$eventLocationMap	 	= str_replace(",", "\n ", $eventLocation);
-$eventLocationMap	 	= str_replace(";", "\\n\n ", $eventLocationMap);
 
 $eventLocation 			= str_replace(",", "\\n", $eventLocation);
 $eventLocation 			= str_replace(";", "\\n", $eventLocation);
@@ -80,49 +80,53 @@ function escapeString($string) {
   return preg_replace('/([\,;])/','\\\$1', $string);
 }
 
-$vCalendar = "BEGIN:VCALENDAR\n";
-$vCalendar .= "VERSION:2.0\n";
-$vCalendar .= "PRODID:" . $prodid . "\n";
-$vCalendar .= "CALSCALE:GREGORIAN\n";
-$vCalendar .= "BEGIN:VEVENT\n";
-$vCalendar .= "DTEND:" . dateToCal($eventEndDate) . "\n";
-$vCalendar .= "UID:" . $eventID . "\n";
-$vCalendar .= "DTSTAMP:" . dateToCal(time()) . "\n";
-
-$vCalendar .= "LOCATION:" . $eventLocation . "\n";
-$vCalendar .= "DESCRIPTION:" . $eventSummary . "\n";
-if($link){
-    $vCalendar .= "URL;VALUE=URI:" . $link . "\n";    
-}
-
-$vCalendar .= "SUMMARY:" . $eventName . "\n";
 
 if($attachment){
 	$getAttachment	= file_get_contents($attachment);
 	$getFileName	= pathinfo($attachment);
 	$fileName 		= $getFileName['basename'];
 
-	$vCalendar .= "ATTACH;ENCODING=BASE64;VALUE=BINARY;X-APPLE-FILENAME=" .  $fileName . ":";
+	$eventAttachment .= "ATTACH;ENCODING=BASE64;VALUE=BINARY;X-APPLE-FILENAME=" .  $fileName . ":";
 	$b64vcard = base64_encode($getAttachment);
 	$b64mline = chunk_split($b64vcard,74,"\n");
 	$b64final = preg_replace('/(.+)/', ' $1', $b64mline);
 
-	$vCalendar .= $b64final;
+	$eventAttachment .= $b64final;
 }
-
-$vCalendar .= "DTSTART:" . dateToCal($eventStartDate) ."\n";
+else {
+    $eventAttachment = '';
+}
 
 if($coordinates && $geocode == 1){
-$vCalendar .= "X-APPLE-PROXIMITY:DEPART\n";
+$coordinatesOutput .= "X-APPLE-PROXIMITY:DEPART\n";
     
-$vCalendar .= "X-APPLE-STRUCTURED-LOCATION;VALUE=URI;
- X-ADDRESS=" . $eventLocationMap . ";
+$coordinatesOutput .= "X-APPLE-STRUCTURED-LOCATION;VALUE=URI;
+ X-ADDRESS=" . $eventLocation . ";
  X-APPLE-RADIUS=49.91307587029686;X-TITLE=Zoom 1:geo:
- ".$coordinates."\n";
+ ".$coordinates;
 }
-$vCalendar .= "END:VEVENT\n";
-$vCalendar .= "END:VCALENDAR\n";
+
+$vCalendar = $modx->getChunk($tpl, array(
+                                        'id'                => $prodid,
+                                        'eventStartDate'    => dateToCal($eventStartDate),
+                                        'eventEndDate'      => dateToCal($eventEndDate),
+                                        'eventID'           => $eventID,
+                                        'attachment'        => $eventAttachment,
+                                        'dtstamp'           => dateToCal(time()),
+                                        'location'          => $eventLocation,
+                                        'description'       => $eventSummary,
+                                        'url'               => $link,
+                                        'name'              => $eventName,
+                                        'coordinates'       => $coordinatesOutput
+                                    )
+                                );
+                                
+if (!file_exists($eventsDir)) {
+    mkdir($eventsDir, 0777, true);
+}
 
 $eventsFile = fopen($eventsDir . $file, "w");
 fwrite($eventsFile, $vCalendar);
 fclose($eventsFile);
+
+$modx->toPlaceholder('calendarLink', $filePath . $file,'');
