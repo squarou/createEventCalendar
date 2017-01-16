@@ -31,7 +31,7 @@ Add placeholder
 |-------------|----------------------------------------------------------------------------------------------|---------------------------------------|
 | filePath    | Path where the calendar file will be saved.                                                  | /events/                              |
 | fileName    | Name of file, defaults to pagetitle. Extensions ".ics" is automatically added.               | myevent                               |
-| tpl         | Chunk to use for rendering output.                                                           |                                       |
+| tpl         | Chunk to use for rendering output.                                                           | eventCalendarItem                     |
 | summary     | Add summary to event                                                                         | [[*description]]                      |
 | startDate   | Start date of event. Format like 2015-05-14 15:53:00 (default output of date TV)             | 2017-01-17 15:30:00                   |
 | endDate     | End date of event. Format like 2015-05-14 15:53:00 (default output of date TV)               | 2017-01-17 18:30:00                   |
