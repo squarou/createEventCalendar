@@ -1,0 +1,44 @@
+{
+    "name": "CreateEventCalendar",
+    "lowCaseName": "createeventcalendar",
+    "description": "CreateEventCalendar makes it possible to dynamically create iCalendar files which visitors can download and add to their personal calendar.",
+    "author": "Sander Drenth",
+    "version": "0.1.0",
+    "package":{
+        "menus": [],
+        "elements": {
+            "categories": [
+                {
+                    "name": "CreateEventCalendar"
+                }
+            ],
+            "snippets": [{
+                "name": "CreateEventCalendar",
+                "file": "createeventcalendar.snippet.php"
+            }],
+            "chunks": [{
+                "name": "eventCalendarItem",
+                "file": "eventcalendaritem.chunk.tpl"
+            }]
+        },
+        "systemSettings": [{
+            "key": "user_name",
+            "type": "textfield",
+            "area": "default",
+            "value": ""
+        }, {
+            "key": "user_email",
+            "type": "textfield",
+            "area": "default",
+            "value": ""
+        }]
+    }
+    ,"build":{
+        "resolver": {
+            "after": ["setupoptions.resolver.php", "stercextra.resolver.php"]
+        },
+        "setupOptions":{
+            "source": "setup.options.php"
+        }
+    }
+}
