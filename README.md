@@ -1,29 +1,26 @@
-# README #
+# CreateEventCalendar #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+CreateEventCalendar uses template variables to generate iCalendar files (.ics) specially for events. CreateEventCalendar makes it possible to dynamically create iCalendar files which visitors can download and add to their personal calendar.
 
-### What is this repository for? ###
+**Features**
+* Add an URL
+* Add an attachment 
+* Add a location (and add a map for iOS) with optional automatic geocoding of the address.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Usage ###
+```
+Add snippet
+[[CreateEventCalendar? 
+  &filePath=`/events/`
+  &summary=`[[*description]]`
+  &startDate=`[[*eventStartDate]]`
+  &endDate=`[[*eventEndDate]]`
+  &link=`[[*eventLink]]`
+  &attachment=`[[*eventAttachment]]`
+  &address=`zoom,1,9231DX,Surhuisterveen,Nederland`
+  &geocode=`1`
+]]
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+Add placeholder
+<a href="[[+calendarLink]]" target="_blank">Add to calendar</a>
+```
