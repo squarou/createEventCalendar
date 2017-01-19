@@ -41,11 +41,6 @@ if ($modx->resource->get('longtitle')) {
     $eventName = $modx->resource->get('pagetitle');
 }
 
-/* Check if a file with this name already exists */
-$file       = $fileName ? $fileName . ".ics" : $modx->resource->get('pagetitle') . ".ics";
-$file       = strtolower(str_replace(' ', '', $file));
-$eventsFile = fopen($eventsDir . $file, "w");
-
 $service = $modx->getService(
     'createeventcalendar',
     'CreateEventCalendar',
@@ -58,6 +53,12 @@ $service = $modx->getService(
 if (!($service instanceof CreateEventCalendar)) {
     return;
 }
+
+/* Set filename. */
+$file = $fileName ? $service->setFilename($fileName) : $service->setFilename($modx->resource->get('pagetitle'));
+
+/* Check if a file with this name already exists */
+$eventsFile = fopen($eventsDir . $file, "w");
 
 if (!$coordinates && $geocode == 1) {
     $coordinates = $service->getCoordinatesFromLocation($eventLocation);

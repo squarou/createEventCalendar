@@ -52,6 +52,17 @@ class CreateEventCalendar
         $this->modx->lexicon->load('createeventcalendar:default');
     }
 
+    /*
+     * Sanitize and set filename.
+     */
+    public function setFilename($name)
+    {
+        $name = strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($name, ENT_QUOTES)));
+        $name = $name . ".ics";
+
+        return $name;
+    }
+
     /**
      * Get a local configuration option or a namespaced system setting by key.
      *
