@@ -1,6 +1,6 @@
 ---------------------------------------
 CreateEventCalendar
 ---------------------------------------
-Version: 0.0.1
-Author:  <sander@sterc.nl>
+Version: 1.0.0
+Author:  Sterc <modx@sterc.nl>
 ---------------------------------------

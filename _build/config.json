@@ -2,8 +2,8 @@
     "name": "CreateEventCalendar",
     "lowCaseName": "createeventcalendar",
     "description": "CreateEventCalendar makes it possible to dynamically create iCalendar files which visitors can download and add to their personal calendar.",
-    "author": "Sander Drenth",
-    "version": "0.1.0",
+    "author": "Sterc",
+    "version": "1.0.0",
     "package":{
         "menus": [],
         "elements": {
@@ -24,12 +24,12 @@
         "systemSettings": [{
             "key": "user_name",
             "type": "textfield",
-            "area": "default",
+            "area": "Sterc Extra",
             "value": ""
         }, {
             "key": "user_email",
             "type": "textfield",
-            "area": "default",
+            "area": "Sterc Extra",
             "value": ""
         }]
     }

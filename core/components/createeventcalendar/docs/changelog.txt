@@ -1,5 +1,5 @@
 Changelog for CreateEventCalendar.
 
-CreateEventCalendar 0.0.1
+CreateEventCalendar 1.0.0
 ==============
 - Initial release.
