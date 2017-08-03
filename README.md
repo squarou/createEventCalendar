@@ -1,15 +1,14 @@
-#createEventCalendar
-
 ## Info
+Original version from :
 Sterc
 Sander Drenth <sander@sterc.nl> v1.0  
 
-What is CreateEventCalendar?
+**What is CreateEventCalendar ?**
 CreateEventCalendar uses template variables to generate iCalendar files (.ics) specially for events. CreateEventCalendar makes it possible to dynamically create iCalendar files which visitors can download and add to their personal calendar.
 
 This snippet can under more add an URL, an attachment, a location (and add a map for iOS) with optional automatic geocoding of the address.
 
-Usage
+**Usage**
 
 Install:
 Create the createEventCalendar snippet and insert the included code. Inside your assets folder create a directory called events where the generated iCal files will be stored.
