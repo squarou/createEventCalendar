@@ -12,6 +12,6 @@ DESCRIPTION:[[+description]]
 SUMMARY:[[+name]]
 [[+attachment]]
 DTSTART:[[+eventStartDate]]
-[[+coordinates]]
+[[+coordinates:notempty=`[[+coordinates]]`]]
 END:VEVENT
 END:VCALENDAR
